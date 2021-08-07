@@ -1,4 +1,4 @@
-# GumpStudio - Ultima Online Gump Designer
+# GumpStudio UOX3 - Ultima Online Gump Designer
 
 Rebuilt for UOX3 http://www.uox3.org
 
