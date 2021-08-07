@@ -1351,6 +1351,7 @@ namespace GumpStudio.Forms
 			_RegisteredTypes.Add(typeof(TextEntryElement));
 			_RegisteredTypes.Add(typeof(ButtonElement));
 			_RegisteredTypes.Add(typeof(HTMLElement));
+			_RegisteredTypes.Add(typeof(ToolTipElement));
 
 			BuildToolbox();
 
