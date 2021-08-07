@@ -1,6 +1,6 @@
-# GumpStudio - Ultima Online Gump Designer
+# GumpStudio UOX3 - Ultima Online Gump Designer
 
-Rebuilt for UOX3 Http://www.uox3.org
+Rebuilt for UOX3 http://www.uox3.org
 
 Credits:
 Dragon Slayer
