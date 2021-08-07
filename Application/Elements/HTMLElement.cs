@@ -170,7 +170,8 @@ namespace GumpStudio.Elements
 				return $"uox3gump.AddXMFHTMLTok({X}, {Y}, {Width}, {Height},{ShowBackground}, {ShowScrollbar}, {CliLocID}); // {StringList.ENU.GetString(CliLocID)}";
 			}
 
-			return $"uox3gump.AddHTMLGump({X}, {Y}, {Width}, {Height}, {ShowBackground}, {ShowScrollbar}, \"{HTML.Replace("\"", "\\\"")}\");";
+			//return $"uox3gump.AddHTMLGump({X}, {Y}, {Width}, {Height}, {ShowBackground}, {ShowScrollbar}, \"{HTML.Replace("", "\\")}\");";
+			return $"uox3gump.AddHTMLGump({X}, {Y}, {Width}, {Height}, {ShowBackground}, {ShowScrollbar}, {HTML.Replace("\"", "\"")});";
 		}
 	}
 }
