@@ -144,7 +144,8 @@ namespace GumpStudio.Elements
 				Target.Clip = clip;
 				Target.DrawImage(imgDown, X + Width - imgDown.Width, Y + Height - imgDown.Height);
 			}
-			var rectangle1 = new Rectangle(Location, mBGElement.Size);
+
+			_ = new Rectangle(Location, mBGElement.Size);
 			Rectangle rectangle2;
 			if (mBackground)
 			{
@@ -167,11 +168,10 @@ namespace GumpStudio.Elements
 		{
 			if (TextType == HTMLElementType.Localized)
 			{
-				return $"uox3gump.AddXMFHTMLTok({X}, {Y}, {Width}, {Height},{ShowBackground}, {ShowScrollbar}, {CliLocID}); // {StringList.ENU.GetString(CliLocID)}";
+				return $"uox3gump.AddXMFHTMLTok({X}, {Y}, {Width}, {Height}, {ShowBackground.ToString().ToLower()}, {ShowScrollbar.ToString().ToLower()}, {CliLocID}); // {StringList.ENU.GetString(CliLocID)}";
 			}
 
-			//return $"uox3gump.AddHTMLGump({X}, {Y}, {Width}, {Height}, {ShowBackground}, {ShowScrollbar}, \"{HTML.Replace("", "\\")}\");";
-			return $"uox3gump.AddHTMLGump({X}, {Y}, {Width}, {Height}, {ShowBackground}, {ShowScrollbar}, {HTML.Replace("\"", "\"")});";
+			return $"uox3gump.AddHTMLGump({X}, {Y}, {Width}, {Height}, {ShowBackground.ToString().ToLower()}, {ShowScrollbar.ToString().ToLower()}, {HTML.Replace("\"", "\"")});";
 		}
 	}
 }
