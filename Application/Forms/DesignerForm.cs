@@ -14,10 +14,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-
 using GumpStudio.Elements;
 using GumpStudio.Plugins;
-
 using Ultima;
 
 namespace GumpStudio.Forms
@@ -795,8 +793,64 @@ namespace GumpStudio.Forms
 
 			GlobalObjects.DesignerForm = this;
 		}
-
 		public void NormalizeNames()
+		{
+			// Extract magic numbers into constants
+			const int maxDigits = 9;
+			const int startIndex = 0;
+
+			var elements = AllElements.ToArray();
+
+			// Create an array of numeric characters
+			var nums = String.Join(String.Empty, Enumerable.Range(startIndex, maxDigits)).ToCharArray();
+
+			foreach (var element in elements)
+			{
+				// Use constants for string literals
+				element.Name = Regex.Replace(element.Name, "Copy Of", String.Empty, RegexOptions.IgnoreCase).TrimEnd(nums).Trim();
+			}
+
+			var buttons = 0;
+			var switches = 0;
+
+			foreach (var elementTypeGroup in elements.GroupBy(e => e.GetType()))
+			{
+				var index = 0;
+
+				foreach (var nameGroup in elementTypeGroup.ToLookup(e => e.Name))
+				{
+					var name = nameGroup.Key;
+					var count = nameGroup.Count();
+
+					if (count == 0)
+					{
+						continue;
+					}
+
+					foreach (var element in nameGroup)
+					{
+						if (element is TextEntryElement textEntry)
+						{
+							textEntry.ID = index;
+						}
+
+						switch (element)
+						{
+							case ButtonElement:
+								element.Name = $"{name}{++buttons}";
+								break;
+							case CheckboxElement:
+								element.Name = $"{name}{++switches}";
+								break;
+							default:
+								element.Name = $"{name}{++index}";
+								break;
+						}
+					}
+				}
+			}
+		}
+		/*public void NormalizeNames()
 		{
 			var elements = AllElements.ToArray();
 
@@ -846,7 +900,7 @@ namespace GumpStudio.Forms
 					}
 				}
 			}
-		}
+		}*/
 
 		public void AddElement(BaseElement element)
 		{
@@ -883,7 +937,7 @@ namespace GumpStudio.Forms
 			BuildGumplingTree(GumplingTree, null);
 		}
 
-		public void BuildGumplingTree(TreeFolder Item, TreeNode Node)
+		/*public void BuildGumplingTree(TreeFolder Item, TreeNode Node)
 		{
 			foreach (TreeItem item in Item.GetChildren())
 			{
@@ -905,6 +959,27 @@ namespace GumpStudio.Forms
 				if (item is TreeFolder folder)
 				{
 					BuildGumplingTree(folder, treeNode);
+				}
+			}
+		}*/
+
+		public void BuildGumplingTree(TreeFolder folder, TreeNode parentNode = null)
+		{
+			foreach (var childItem in folder.Children)
+			{
+				var childNode = new TreeNode
+				{
+					Text = childItem.Text,
+					Tag = childItem
+				};
+
+				// Determine the parent node to add the new node
+				(parentNode == null ? _Gumplings.Nodes : parentNode.Nodes).Add(childNode);
+
+				// Recursively build the tree for folders
+				if (childItem is TreeFolder childFolder)
+				{
+					BuildGumplingTree(childFolder, childNode);
 				}
 			}
 		}
@@ -1104,25 +1179,28 @@ namespace GumpStudio.Forms
 
 		private void DeleteSelectedElements()
 		{
-			var flag = false;
+			bool elementsDeleted = false;
 
+			// Copy elements to avoid modifying collection during iteration
 			var elements = ElementStack.Elements.ToArray();
 
 			foreach (var element in elements)
 			{
-				flag = true;
-
 				if (element.Selected)
 				{
 					ElementStack.RemoveElement(element);
+					elementsDeleted = true;
 				}
 			}
 
+			// Set active element to the last selected control
 			SetActiveElement(GetLastSelectedControl());
 
+			// Invalidate canvas image to trigger a refresh
 			CanvasImage.Invalidate();
 
-			if (flag)
+			// If any elements were deleted, create an undo point
+			if (elementsDeleted)
 			{
 				CreateUndoPoint("Delete Elements");
 			}
@@ -1155,126 +1233,75 @@ namespace GumpStudio.Forms
 
 		private void DesignerForm_KeyDown(object sender, KeyEventArgs e)
 		{
-			var hookKeyDown = HookKeyDown;
+			// Invoke hookKeyDown event
+			HookKeyDown?.Invoke(ActiveControl, ref e);
 
-			hookKeyDown?.Invoke(ActiveControl, ref e);
-
+			// If the event is handled or the active control is not CanvasFocus, return
 			if (e.Handled || ActiveControl != CanvasFocus)
 			{
 				return;
 			}
 
-			var flag = false;
+			bool flag = false;
 
-			if ((e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back ? 1 : 0) != 0)
+			// Handle delete/backspace key
+			if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
 			{
 				DeleteSelectedElements();
-
 				flag = true;
-				e.Handled = true;
 			}
-			else if (e.KeyCode == Keys.Up)
+			// Handle arrow keys
+			else if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
 			{
+				int deltaY = e.KeyCode == Keys.Up ? -Convert.ToInt32(ArrowKeyDelta) :
+							 e.KeyCode == Keys.Down ? Convert.ToInt32(ArrowKeyDelta) :
+							 e.KeyCode == Keys.Left ? -Convert.ToInt32(ArrowKeyDelta) : Convert.ToInt32(ArrowKeyDelta);
+
 				foreach (var selectedElement in ElementStack.GetSelectedElements())
 				{
 					var location = selectedElement.Location;
-
-					location.Offset(0, -Convert.ToInt32(ArrowKeyDelta));
-
+					location.Offset(e.KeyCode == Keys.Left || e.KeyCode == Keys.Right ? Convert.ToInt32(ArrowKeyDelta) : 0, deltaY);
 					selectedElement.Location = location;
 				}
 
-				//ArrowKeyDelta = Decimal.Multiply(ArrowKeyDelta, new decimal(106, 0, 0, false, 2));
 				flag = true;
-				e.Handled = true;
 			}
-			else if (e.KeyCode == Keys.Down)
+			// Handle Next and Prior keys
+			else if (e.KeyCode == Keys.Next || e.KeyCode == Keys.Prior)
 			{
-				foreach (var selectedElement in ElementStack.GetSelectedElements())
-				{
-					var location = selectedElement.Location;
-
-					location.Offset(0, Convert.ToInt32(ArrowKeyDelta));
-
-					selectedElement.Location = location;
-				}
-
-				//ArrowKeyDelta = Decimal.Multiply(ArrowKeyDelta, new decimal(106, 0, 0, false, 2));
-				flag = true;
-				e.Handled = true;
-			}
-			else if (e.KeyCode == Keys.Left)
-			{
-				foreach (var selectedElement in ElementStack.GetSelectedElements())
-				{
-					var location = selectedElement.Location;
-
-					location.Offset(-Convert.ToInt32(ArrowKeyDelta), 0);
-
-					selectedElement.Location = location;
-				}
-
-				//ArrowKeyDelta = Decimal.Multiply(ArrowKeyDelta, new decimal(106, 0, 0, false, 2));
-				flag = true;
-				e.Handled = true;
-			}
-			else if (e.KeyCode == Keys.Right)
-			{
-				foreach (var selectedElement in ElementStack.GetSelectedElements())
-				{
-					var location = selectedElement.Location;
-
-					location.Offset(Convert.ToInt32(ArrowKeyDelta), 0);
-
-					selectedElement.Location = location;
-				}
-
-				//ArrowKeyDelta = Decimal.Multiply(ArrowKeyDelta, new decimal(106, 0, 0, false, 2));
-				flag = true;
-				e.Handled = true;
-			}
-			else if (e.KeyCode == Keys.Next)
-			{
-				var index = (ActiveElement == null ? ElementStack._Elements.Count - 1 : ActiveElement.Z) - 1;
+				int step = e.KeyCode == Keys.Next ? -1 : 1;
+				int index = (ActiveElement == null ? ElementStack._Elements.Count - 1 : ActiveElement.Z) + step;
 
 				if (index < 0)
 				{
 					index = ElementStack._Elements.Count - 1;
 				}
-
-				if (index >= 0 & index <= ElementStack._Elements.Count - 1)
-				{
-					SetActiveElement((BaseElement)ElementStack._Elements[index], true);
-				}
-
-				e.Handled = true;
-			}
-			else if (e.KeyCode == Keys.Prior)
-			{
-				var index = (ActiveElement == null ? ElementStack._Elements.Count - 1 : ActiveElement.Z) + 1;
-
-				if (index > ElementStack._Elements.Count - 1)
+				else if (index > ElementStack._Elements.Count - 1)
 				{
 					index = 0;
 				}
 
 				SetActiveElement((BaseElement)ElementStack._Elements[index], true);
-
-				e.Handled = true;
+				flag = true;
 			}
+
+			// Uncomment the following block if needed
 			/*
 			if (Decimal.Compare(ArrowKeyDelta, new decimal(10)) > 0)
 			{
 				ArrowKeyDelta = new decimal(10);
 			}
 			*/
+
+			// If any action was performed, invalidate canvas and update properties grid
 			if (flag)
 			{
 				CanvasImage.Invalidate();
-
 				_PropertiesGrid.SelectedObjects = _PropertiesGrid.SelectedObjects;
+				e.Handled = true;
 			}
 		}
+
 
 		private void DesignerForm_KeyUp(object sender, KeyEventArgs e)
 		{

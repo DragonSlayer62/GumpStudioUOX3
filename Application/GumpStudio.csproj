@@ -8,16 +8,18 @@
 		<Company>Bradley Uffner</Company>
 		<Product>Gump Studio.NET</Product>
 		<Description>Gump Studio UOX3</Description>
-		<Copyright>July 2021</Copyright>
+		<Copyright>Dec 2023</Copyright>
 		<AssemblyVersion>1.9.3</AssemblyVersion>
 		<FileVersion>1.9.3</FileVersion>
 		<Version>1.9.3</Version>
+     <LangVersion>9.0</LangVersion>
 		<ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputPath>..\Build\</OutputPath>
 		<AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
 		<StartupObject>GumpStudio.GumpDesignerMain</StartupObject>
+		<IsPublishable>True</IsPublishable>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 	  <PlatformTarget>AnyCPU</PlatformTarget>

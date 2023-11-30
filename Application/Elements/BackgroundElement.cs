@@ -1,18 +1,10 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: GumpStudio.Elements.BackgroundElement
-// Assembly: GumpStudioCore, Version=1.8.3024.24259, Culture=neutral, PublicKeyToken=null
-// MVID: A77D32E5-7519-4865-AA26-DCCB34429732
-// Assembly location: C:\GumpStudio_1_8_R3_quinted-02\GumpStudioCore.dll
-
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
-
 using GumpStudio.Properties;
-
 using Ultima;
 
 namespace GumpStudio.Elements
@@ -21,8 +13,8 @@ namespace GumpStudio.Elements
 	public class BackgroundElement : ResizeableElement, IDisposable, ICSharpExportable
 	{
 		protected int mGumpID;
-		protected Image[] mMultImageCache;
-
+		//protected Image[] mMultImageCache;
+		/*
 		[Editor(typeof(GumpIDPropEditor), typeof(UITypeEditor))]
 		public int GumpID
 		{
@@ -39,8 +31,11 @@ namespace GumpStudio.Elements
 					{
 						flag = false;
 					}
+					else
+					{
+						gump.Dispose();
+					}
 
-					gump.Dispose();
 					++num1;
 					num2 = 8;
 				}
@@ -56,10 +51,45 @@ namespace GumpStudio.Elements
 					RefreshCache();
 				}
 			}
+		}*/
+
+		[Editor(typeof(GumpIDPropEditor), typeof(UITypeEditor))]
+		public int GumpID
+		{
+			get => mGumpID;
+			set
+			{
+				if (IsValidGumpID(value))
+				{
+					mGumpID = value;
+					RefreshCache();
+				}
+				else
+				{
+					MessageBox.Show(Resources.Invalid_GumpID, Resources.Invalid_GumpID);
+				}
+			}
 		}
 
-		public override string Type => "AddBackground";
+		private bool IsValidGumpID(int gumpID)
+		{
+			const int maxAttempts = 8;
 
+			for (int attempt = 0; attempt < maxAttempts; attempt++)
+			{
+				var gump = Gumps.GetGump(attempt + gumpID);
+				if (gump == null)
+				{
+					return false;
+				}
+				gump.Dispose();
+			}
+
+			return true;
+		}
+		/*
+		public override string Type => "AddBackground";
+		
 		public BackgroundElement()
 		{
 			mMultImageCache = new Image[9];
@@ -82,10 +112,7 @@ namespace GumpStudio.Elements
 			int num;
 			do
 			{
-				if (mMultImageCache[index] != null)
-				{
-					mMultImageCache[index].Dispose();
-				}
+				mMultImageCache[index]?.Dispose();
 
 				++index;
 				num = 8;
@@ -99,7 +126,48 @@ namespace GumpStudio.Elements
 			info.AddValue("BackgroundElementVersion", 1);
 			info.AddValue("GumpID", mGumpID);
 		}
+		*/
 
+		public override string Type => "AddBackground";
+		private const int CacheSize = 9;
+
+		public BackgroundElement()
+		{
+			mMultImageCache = new Image[CacheSize]; // Initialize in the constructor
+			InitializeDefaults();
+		}
+
+		public BackgroundElement(SerializationInfo info, StreamingContext context)
+			: base(info, context)
+		{
+			info.GetInt32("BackgroundElementVersion");
+			GumpID = info.GetInt32(nameof(GumpID));
+		}
+
+		public void Dispose()
+		{
+			for (int index = 0; index < mMultImageCache.Length; index++)
+			{
+				mMultImageCache[index]?.Dispose();
+			}
+		}
+
+		public override void GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			base.GetObjectData(info, context);
+			info.AddValue("BackgroundElementVersion", 1);
+			info.AddValue(nameof(GumpID), mGumpID);
+		}
+
+		private Image[] mMultImageCache; // Declare as readonly
+
+		private void InitializeDefaults()
+		{
+			_Size = new Size(100, 100);
+			mGumpID = 9200;
+			RefreshCache();
+		}
+		/*
 		public override void RefreshCache()
 		{
 			if (mMultImageCache == null)
@@ -111,16 +179,28 @@ namespace GumpStudio.Elements
 			int num;
 			do
 			{
-				if (mMultImageCache[index] != null)
-				{
-					mMultImageCache[index].Dispose();
-				}
+				mMultImageCache[index]?.Dispose();
 
 				mMultImageCache[index] = Gumps.GetGump(index + mGumpID);
 				++index;
 				num = 8;
 			}
 			while (index <= num);
+		}*/
+
+		public override void RefreshCache()
+		{
+			if (mMultImageCache == null)
+			{
+				mMultImageCache = new Image[CacheSize];
+			}
+
+			for (int index = 0; index < CacheSize; index++)
+			{
+				mMultImageCache[index]?.Dispose();
+
+				mMultImageCache[index] = Gumps.GetGump(index + mGumpID);
+			}
 		}
 
 		public override void Render(Graphics Target)
@@ -142,6 +222,7 @@ namespace GumpStudio.Elements
 				++index;
 				num1 = 8;
 			}
+
 			while (index <= num1);
 			var clip = Target.Clip;
 			var rect = new Rectangle(X, Y, mMultImageCache[0].Width, mMultImageCache[0].Height);
@@ -245,6 +326,12 @@ namespace GumpStudio.Elements
 
 		public string ToCSharpString()
 		{
+			// Add validation if necessary
+			if (GumpID == 0) // Change 0 to the default or invalid value for your use case
+			{
+				throw new ArgumentException("GumpID must be a valid integer value.", nameof(GumpID));
+			}
+
 			return $"uox3gump.AddBackground({X}, {Y}, {Width}, {Height}, {GumpID});";
 		}
 	}

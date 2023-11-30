@@ -1,12 +1,6 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: GumpStudio.TreeFolder
-// Assembly: GumpStudioCore, Version=1.8.3024.24259, Culture=neutral, PublicKeyToken=null
-// MVID: A77D32E5-7519-4865-AA26-DCCB34429732
-// Assembly location: C:\GumpStudio_1_8_R3_quinted-02\GumpStudioCore.dll
+﻿using System.Collections;
 
-using System.Collections;
-
-namespace GumpStudio
+/*namespace GumpStudio
 {
 	public class TreeFolder : TreeItem
 	{
@@ -34,4 +28,33 @@ namespace GumpStudio
 			Item.Parent = null;
 		}
 	}
+}*/
+
+using System.Collections.Generic;
+
+namespace GumpStudio
+{
+	public class TreeFolder : TreeItem
+	{
+		private List<TreeItem> _children = new List<TreeItem>();
+
+		public TreeFolder(string text) : base(text)
+		{
+		}
+
+		public IReadOnlyList<TreeItem> Children => _children.AsReadOnly();
+
+		public void AddItem(TreeItem item)
+		{
+			_children.Add(item);
+			item.Parent = this;
+		}
+
+		public void RemoveItem(TreeItem item)
+		{
+			_children.Remove(item);
+			item.Parent = null;
+		}
+	}
 }
+
