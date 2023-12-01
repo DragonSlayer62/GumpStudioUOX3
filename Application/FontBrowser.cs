@@ -1,18 +1,10 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: GumpStudio.FontBrowser
-// Assembly: GumpStudioCore, Version=1.8.3024.24259, Culture=neutral, PublicKeyToken=null
-// MVID: A77D32E5-7519-4865-AA26-DCCB34429732
-// Assembly location: C:\GumpStudio_1_8_R3_quinted-02\GumpStudioCore.dll
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
-
 using GumpStudio.Elements;
-
 using UOFont;
 
 namespace GumpStudio

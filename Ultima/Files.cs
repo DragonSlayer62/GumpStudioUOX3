@@ -479,34 +479,5 @@ namespace Ultima
 			}
 			return false;
 		}
-
-		/// <summary>
-		/// Checks if map1.mul exists and sets <see cref="Ultima.Map"/>
-		/// </summary>
-		public static void CheckForNewMapSize()
-		{
-			if (Files.GetFilePath("map1.mul") != null)
-			{
-				if (Ultima.Map.Trammel.Width == 7168)
-				{
-					Ultima.Map.Trammel = new Ultima.Map(1, 1, 7168, 4096);
-				}
-				else
-				{
-					Ultima.Map.Trammel = new Ultima.Map(1, 1, 6144, 4096);
-				}
-			}
-			else
-			{
-				if (Ultima.Map.Trammel.Width == 7168)
-				{
-					Ultima.Map.Trammel = new Ultima.Map(0, 1, 7168, 4096);
-				}
-				else
-				{
-					Ultima.Map.Trammel = new Ultima.Map(0, 1, 6144, 4096);
-				}
-			}
-		}
 	}
 }

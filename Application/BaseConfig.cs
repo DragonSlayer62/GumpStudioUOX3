@@ -20,7 +20,7 @@ namespace GumpStudio
 	public abstract class BaseConfig
 	{
 		[NonSerialized, XmlIgnore]
-		private readonly PropertyEditor _Editor = new PropertyEditor();
+		private readonly PropertyEditor _Editor = new();
 
 		[NonSerialized, XmlIgnore]
 		private readonly Type _Type;

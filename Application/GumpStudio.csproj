@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net48</TargetFramework>
+		<TargetFramework>net481</TargetFramework>
 		<RootNamespace>GumpStudio</RootNamespace>
 		<UseWindowsForms>true</UseWindowsForms>
 		<AssemblyTitle>Gump Studio.NET</AssemblyTitle>
@@ -9,9 +9,9 @@
 		<Product>Gump Studio.NET</Product>
 		<Description>Gump Studio UOX3</Description>
 		<Copyright>Dec 2023</Copyright>
-		<AssemblyVersion>1.9.3</AssemblyVersion>
-		<FileVersion>1.9.3</FileVersion>
-		<Version>1.9.3</Version>
+		<AssemblyVersion>2.0.0</AssemblyVersion>
+		<FileVersion>2.0.0</FileVersion>
+		<Version>2.0.0</Version>
      <LangVersion>9.0</LangVersion>
 		<ApplicationIcon>Resources\Icon.ico</ApplicationIcon>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>

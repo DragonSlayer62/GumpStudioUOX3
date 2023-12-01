@@ -227,6 +227,7 @@ namespace Ultima
 		{
 			return GetLand(index, out var patched);
 		}
+
 		/// <summary>
 		/// Returns Bitmap of LandTile (with Cache) and verdata bool
 		/// </summary>
@@ -614,7 +615,7 @@ namespace Ultima
 							var ms = new MemoryStream();
 							bmp.Save(ms, ImageFormat.Bmp);
 							var checksum = sha.ComputeHash(ms.ToArray());
-							if (compareSaveImagesLand(checksum, out var sum))
+							if (CompareSaveImagesLand(checksum, out var sum))
 							{
 								binidx.Write(sum.pos); //lookup
 								binidx.Write(sum.length);
@@ -668,7 +669,7 @@ namespace Ultima
 							var ms = new MemoryStream();
 							bmp.Save(ms, ImageFormat.Bmp);
 							var checksum = sha.ComputeHash(ms.ToArray());
-							if (compareSaveImagesStatic(checksum, out var sum))
+							if (CompareSaveImagesStatic(checksum, out var sum))
 							{
 								binidx.Write(sum.pos); //lookup
 								binidx.Write(sum.length);
@@ -759,7 +760,7 @@ namespace Ultima
 			}
 		}
 
-		private static bool compareSaveImagesLand(byte[] newchecksum, out CheckSums sum)
+		private static bool CompareSaveImagesLand(byte[] newchecksum, out CheckSums sum)
 		{
 			sum = new CheckSums();
 			for (var i = 0; i < checksumsLand.Count; ++i)
@@ -787,7 +788,7 @@ namespace Ultima
 			}
 			return false;
 		}
-		private static bool compareSaveImagesStatic(byte[] newchecksum, out CheckSums sum)
+		private static bool CompareSaveImagesStatic(byte[] newchecksum, out CheckSums sum)
 		{
 			sum = new CheckSums();
 			for (var i = 0; i < checksumsStatic.Count; ++i)

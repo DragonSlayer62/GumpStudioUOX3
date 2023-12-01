@@ -68,7 +68,7 @@ namespace GumpStudio.Forms
             txtAbout.Size = new System.Drawing.Size(454, 150);
             txtAbout.TabIndex = 1;
             txtAbout.TabStop = false;
-            txtAbout.Text = "Gump Studio was written by Bradley Uffner in January of 2003.";
+            txtAbout.Text = "Gump Studio Version 2.0.0";
             txtAbout.TextChanged += new EventHandler(txtAbout_TextChanged);
             // 
             // Label1
@@ -79,7 +79,7 @@ namespace GumpStudio.Forms
             Label1.Name = "Label1";
             Label1.Size = new System.Drawing.Size(162, 17);
             Label1.TabIndex = 3;
-            Label1.Text = "(C) Bradley Uffner, 2004";
+            Label1.Text = "(C) Dragon Slayer";
             // 
             // lblVersion
             // 
@@ -147,12 +147,7 @@ namespace GumpStudio.Forms
 		private const string _Text = @"
 Gump Studio being redesigned to work with UOX3 Emulator.
 http://www.uox3.org
-Credits:
-Gump Studio was originally designed and written by Bradley Uffner in 2004.
-
-UI artwork by Melanius.
-Ultima SDK by Krrios.
-UOFonts by DarkStorm.
+Version 2.0.0
 ";
 
 		public void SetText(string text)

@@ -15,22 +15,22 @@ namespace GumpStudio.Plugins
 	{
 		private static readonly string Template = @"
 
-function ~gump_type~(pUser)
+function ~gump_type~( pUser )
 {
 	var socket = pUser.socket;
 	var uox3gump = new Gump;
-	uox3gump.AddPage(0);
+	uox3gump.AddPage( 0 );
 	
 	~gump_layout~
 	
-	uox3gump.Send(pUser);
+	uox3gump.Send( pUser );
 	uox3gump.Free();
 }
 
-function onGumpPress(pSock, pButton, gumpData)
+function onGumpPress( pSock, pButton, gumpData )
 {
 	var pUser = pSock.currentChar;
-	switch (pButton)
+	switch( pButton )
 	{
 		case 0:
 			break;
