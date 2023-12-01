@@ -5,9 +5,7 @@ using System.Drawing.Design;
 using System.Security.Permissions;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
-
 using Microsoft.VisualBasic.CompilerServices;
-
 using Ultima;
 
 namespace GumpStudio

@@ -4,9 +4,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Runtime.Serialization;
 using System.Windows.Forms;
-
 using GumpStudio.Properties;
-
 using Ultima;
 
 namespace GumpStudio.Elements

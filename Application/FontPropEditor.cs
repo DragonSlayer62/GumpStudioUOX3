@@ -1,16 +1,9 @@
-﻿// Decompiled with JetBrains decompiler
-// Type: GumpStudio.FontPropEditor
-// Assembly: GumpStudioCore, Version=1.8.3024.24259, Culture=neutral, PublicKeyToken=null
-// MVID: A77D32E5-7519-4865-AA26-DCCB34429732
-// Assembly location: C:\GumpStudio_1_8_R3_quinted-02\GumpStudioCore.dll
-
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Security.Permissions;
 using System.Windows.Forms.Design;
-
 using Microsoft.VisualBasic.CompilerServices;
 
 namespace GumpStudio

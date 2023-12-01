@@ -28,7 +28,7 @@ namespace GumpStudio.Elements
 		protected Size _Size;
 
 		[Browsable(false)]
-		public virtual Rectangle Bounds => new Rectangle(_Location, _Size);
+		public virtual Rectangle Bounds => new(_Location, _Size);
 
 		[Description("A user defined comment for this element. UO does not use this.")]
 		[MergableProperty(false)]
